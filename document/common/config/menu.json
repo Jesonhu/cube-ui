@@ -2,6 +2,7 @@
   "en-US": {
     "overview": {
       "name": "Overview",
+      "angle": "01",
       "subList": {
         "introduction": "Introduction",
         "quick-start": "QuickStart",
@@ -12,15 +13,30 @@
     },
     "components": {
       "name": "Components",
+      "angle": "02",
       "subList": {
         "basic": {
           "name": "Basic",
           "subList": {
             "button": "Button",
-            "checkbox": "Checkbox",
-            "checkbox-group": "CheckboxGroup",
             "loading": "Loading",
             "tip": "Tip"
+          }
+        },
+        "form": {
+          "name": "Form",
+          "subList": {
+            "checkbox": "Checkbox",
+            "checkbox-group": "CheckboxGroup",
+            "radio": "Radio",
+            "input": "Input",
+            "textarea": "Textarea",
+            "select": "Select",
+            "switch": "Switch",
+            "rate": "Rate",
+            "validator": "Validator",
+            "upload": "Upload",
+            "form": "Form"
           }
         },
         "popup": {
@@ -30,9 +46,12 @@
             "toast": "Toast",
             "picker": "Picker",
             "cascade-picker": "CascadePicker",
+            "date-picker": "DatePicker",
             "time-picker": "TimePicker",
+            "segment-picker": "SegmentPicker",
             "dialog": "Dialog",
-            "action-sheet": "ActionSheet"
+            "action-sheet": "ActionSheet",
+            "drawer": "Drawer"
           }
         },
         "scroll": {
@@ -40,13 +59,15 @@
           "subList": {
             "scroll": "Scroll",
             "slide": "Slide",
-            "index-list": "IndexList"
+            "index-list": "IndexList",
+            "swipe": "Swipe"
           }
         }
       }
     },
     "modules": {
       "name": "Modules",
+      "angle": "03",
       "subList": {
         "style": "style",
         "create-api": "create-api",
@@ -57,6 +78,7 @@
   "zh-CN": {
     "overview": {
       "name": "概览",
+      "angle": "01",
       "subList": {
         "introduction": "介绍",
         "quick-start": "快速上手",
@@ -67,15 +89,30 @@
     },
     "components": {
       "name": "组件",
+      "angle": "02",
       "subList": {
         "basic": {
           "name": "基础",
           "subList": {
             "button": "Button",
-            "checkbox": "Checkbox",
-            "checkbox-group": "CheckboxGroup",
             "loading": "Loading",
             "tip": "Tip"
+          }
+        },
+        "form": {
+          "name": "表单",
+          "subList": {
+            "checkbox": "Checkbox",
+            "checkbox-group": "CheckboxGroup",
+            "radio": "Radio",
+            "input": "Input",
+            "textarea": "Textarea",
+            "select": "Select",
+            "switch": "Switch",
+            "rate": "Rate",
+            "validator": "Validator",
+            "upload": "Upload",
+            "form": "Form"
           }
         },
         "popup": {
@@ -85,9 +122,12 @@
             "toast": "Toast",
             "picker": "Picker",
             "cascade-picker": "CascadePicker",
+            "date-picker": "DatePicker",
             "time-picker": "TimePicker",
+            "segment-picker": "SegmentPicker",
             "dialog": "Dialog",
-            "action-sheet": "ActionSheet"
+            "action-sheet": "ActionSheet",
+            "drawer": "Drawer"
           }
         },
         "scroll": {
@@ -95,13 +135,15 @@
           "subList": {
             "scroll": "Scroll",
             "slide": "Slide",
-            "index-list": "IndexList"
+            "index-list": "IndexList",
+            "swipe": "Swipe"
           }
         }
       }
     },
     "modules": {
       "name": "模块",
+      "angle": "03",
       "subList": {
         "style": "style",
         "create-api": "create-api",

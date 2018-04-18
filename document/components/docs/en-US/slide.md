@@ -39,7 +39,7 @@
       changePage(current) {
         console.log('The index of current slide is ' + current)
       },
-      clickHandle(item, index) {
+      clickHandler(item, index) {
         console.log(item, index)
       }
     }
@@ -65,7 +65,7 @@
 
 - Automatic play
 
-  Automatic play is turned on by default. You can cnfigure that with `auto-play` attribute.
+  Automatic play is turned on by default. You can configure that with `auto-play` attribute.
 
   ```html
   <cube-slide></cube-slide>
@@ -96,6 +96,13 @@
   <cube-slide :speed="200"></cube-slide>
   ```
 
+- Allow vertical scroll behavior
+
+  It can not be scrolling in the vertical direction by default. You can configure that with `allow-vertical` attribute.
+
+  ```html
+  <cube-slide :allow-vertical="true"></cube-slide>
+  ```
 
 - refresh method
 
@@ -170,6 +177,10 @@
 | interval | interval of play | Number | - | 4000 |
 | threshold | sliding threshold of switching pages | Number | (0, 1) | 0.3 |
 | speed | speed of switching pages | Number | - | 400 |
+| allowVertical | whether to allow vertical scrolling | Boolean | true/false | false |
+| direction | slide direction | String | horizontal/vertical | horizontal |
+| showDots | whether to show the indicator dots | Boolean | true/false | true |
+| stopPropagation | whether to stop propagation, which could use to solve the problem of event propagation when nest same direction slide | Boolean | true/false | false |
 
 ### Slot
 

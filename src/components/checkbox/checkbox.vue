@@ -1,12 +1,12 @@
 <template>
   <div class="cube-checkbox" :class="_containerClass" :data-pos="position">
     <label class="cube-checkbox-wrap" :class="_wrapClass">
-      <input class="cube-checkbox-input" type="checkbox" :disabled="disabled" v-model="checkValue">
-      <span class="cube-checkbox-ui cubeic-round-border">
-        <i class="cubeic-right"></i>
+      <input class="cube-checkbox-input" type="checkbox" :disabled="computedOption.disabled" v-model="checkValue">
+      <span class="cube-checkbox-ui" :class="_borderIconClass">
+        <i :class="_rightIconClass"></i>
       </span>
       <span class="cube-checkbox-label">
-        <slot>{{label}}</slot>
+        <slot>{{computedOption.label}}</slot>
       </span>
     </label>
   </div>
@@ -31,9 +31,25 @@
         type: Boolean,
         default: false
       },
+      option: {
+        type: [Boolean, String, Object],
+        default () {
+          return {
+            _def_option: true
+          }
+        }
+      },
       position: {
         type: String,
         default: 'left'
+      },
+      shape: {
+        type: String,
+        default: 'circle'
+      },
+      hollowStyle: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -46,35 +62,64 @@
       }
     },
     computed: {
+      computedOption() {
+        let option = this.option
+        const label = this.label
+        const disabled = this.disabled
+        if (option._def_option === true) {
+          option = {
+            label,
+            value: label,
+            disabled
+          }
+        } else if (typeof option === 'string') {
+          option = {
+            label: option,
+            value: option,
+            disabled: false
+          }
+        }
+        return option
+      },
       checkValue: {
         get () {
           if (this.isInGroup) {
-            return this.$parent.value.indexOf(this.label) > -1
+            return this.$parent.value.indexOf(this.computedOption.value) > -1
           } else {
             return Boolean(this.value)
           }
         },
         set (newValue) {
-          const emitValue = this.label && newValue ? this.label : newValue
+          const value = this.computedOption.value
+          const emitValue = value && newValue ? value : newValue
           const parentEmitEvent = newValue ? EVENT_CHECKED : EVENT_CANCLE_CHECKED
           this.$emit(EVENT_INPUT, emitValue)
           if (this.isInGroup) {
-            this.$parent.$emit(parentEmitEvent, this.label || newValue, this)
+            this.$parent.$emit(parentEmitEvent, value || newValue)
           }
         }
       },
       _containerClass() {
-        if (this.isInHorizontalGroup) {
-          return 'border-right-1px'
+        return {
+          'cube-checkbox-hollow': this.hollowStyle,
+          'cube-checkbox_checked': this.checkValue,
+          'cube-checkbox_disabled': this.computedOption.disabled,
+          'border-right-1px': this.isInHorizontalGroup
         }
       },
       _wrapClass() {
-        const isInHorizontalGroup = this.isInHorizontalGroup
-        return {
-          'cube-checkbox_checked': this.checkValue,
-          'cube-checkbox_disabled': this.disabled,
-          'border-bottom-1px': this.isInGroup && !isInHorizontalGroup
+        if (this.isInGroup && !this.isInHorizontalGroup) {
+          return 'border-bottom-1px'
         }
+      },
+      isSquare() {
+        return this.shape === 'square' || this.hollowStyle
+      },
+      _borderIconClass() {
+        return this.isSquare ? 'cubeic-square-border' : 'cubeic-round-border'
+      },
+      _rightIconClass() {
+        return this.isSquare ? 'cubeic-square-right' : 'cubeic-right'
       }
     }
   }
@@ -90,14 +135,13 @@
     text-align: left
     font-size: 100%
     color: $checkbox-color
-    background-color: $checkbox-bgc
     &[data-pos="right"]
-      .cube-checkbox-wrap
-        padding-left: 0
-        padding-right: $ui-width
       .cube-checkbox-ui
-        left: auto
+        margin-right: 0
+        position: absolute
         right: 0
+      .cube-checkbox-label
+        margin-right: $ui-width
   .cube-checkbox-wrap
     position: relative
     display: flex
@@ -124,12 +168,14 @@
     margin-right: $ui-width - 1em
     line-height: 1
     border-radius: 50%
+    &.cubeic-square-border
+      border-radius: 2px
     &::before, i
       transition: all .2s
     &::before
       color: $checkbox-icon-color
       display: inline-block
-      transform: scale(1.2)
+      transform: scale(1.24)
     i
       position: absolute
       top: 0
@@ -155,4 +201,37 @@
   .cube-checkbox_checked.cube-checkbox_disabled
     .cube-checkbox-ui
       background-color: $checkbox-checked-icon-bgc
+  .cube-checkbox-hollow
+    i
+      width: 100%
+      height: 100%
+      &::before
+        content: ""
+        position: absolute
+        top: 50%
+        left: 50%
+        width: 50%
+        height: 50%
+        transform: translate(-50%, -50%)
+        background-color: currentColor
+        border-radius: 2px
+    &.cube-checkbox_checked
+      .cube-checkbox-ui
+        &::before
+          color: $checkbox-hollow-checked-icon-color
+        i
+          transform: scale(1)
+          color: $checkbox-hollow-checked-icon-color
+    &.cube-checkbox_disabled
+      .cube-checkbox-ui
+        background-color: transparent
+        &::before
+          color: $checkbox-hollow-disabled-icon-color
+        i
+          transform: scale(1)
+          color: transparent
+      &.cube-checkbox_checked
+        .cube-checkbox-ui
+          i
+            color: $checkbox-hollow-disabled-icon-color
 </style>

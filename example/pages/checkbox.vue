@@ -3,10 +3,13 @@
     <template slot="content">
       <cube-checkbox v-model="checked">Checkbox</cube-checkbox>
       <p>checked value: {{checked}}</p>
-      <cube-checkbox v-model="checked" :disabled="true">Disabled Checkbox</cube-checkbox>
-      <cube-checkbox v-model="checked" position="right">Position Checkbox</cube-checkbox>
-      <cube-checkbox v-model="checked2" label="labelValue">Set label Checkbox</cube-checkbox>
-      <p>checked value (with label) : {{checked2}}</p>
+      <cube-checkbox v-model="checked" position="right" shape="square" :hollow-style="true">Styled Checkbox</cube-checkbox>
+      <br><br>
+      <cube-checkbox v-model="checked2" :option="optionValue"></cube-checkbox>
+      <p>checked value (with option) : {{checked2}}</p>
+      <cube-checkbox v-model="checked2" :option="{disabled: true}" :hollow-style="true">
+        Disabled Checkbox
+      </cube-checkbox>
     </template>
   </cube-page>
 </template>
@@ -18,7 +21,12 @@
     data() {
       return {
         checked: true,
-        checked2: false
+        checked2: 'optionValue',
+        optionValue: {
+          label: 'Option Checkbox',
+          value: 'optionValue',
+          disabled: false
+        }
       }
     },
     components: {
@@ -33,4 +41,6 @@
       >
         *
           margin: 10px 0
+    .cube-checkbox
+      background-color: #fff
 </style>

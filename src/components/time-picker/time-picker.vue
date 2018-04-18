@@ -4,6 +4,8 @@
     :title="title"
     :data="data"
     :selected-index="selectedIndex"
+    :z-index="zIndex"
+    :swipe-time="swipeTime"
     @select="_pickerSelect"
     @cancel="_pickerCancel"
     @change="_pickerChange"></cube-picker>
@@ -47,6 +49,12 @@
         type: String,
         default: '选择时间'
       },
+      swipeTime: {
+        type: Number,
+        default: 2500
+      },
+      // delay is valid when less than (the minute left in today + 1440).
+      // So, it will be security when less than 1440.
       delay: {
         type: Number,
         default: 15
@@ -68,6 +76,9 @@
       minuteStep: {
         type: Number,
         default: MINUTE_STEP
+      },
+      zIndex: {
+        type: Number
       }
     },
     data() {

@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import cookie from 'js-cookie'
 
 export function setItem(k, v) {
@@ -21,7 +22,7 @@ export function getItem(k) {
 export function getCurrentLang() {
   const itemKey = 'CUBE_LANGUAGE'
   const hash = window.location.hash
-  const hashZhLang = hash ? hash.indexOf('/zh-') >= 0 ? 'zh-CN' : 'en-US' : ''
+  const hashZhLang = hash.indexOf('/zh-') >= 0 ? 'zh-CN' : hash.indexOf('/en-') >= 0 ? 'en-US' : ''
   const lang = hashZhLang || getItem(itemKey) || window.navigator.language || 'en-US'
   let defaultLang = 'en-US'
   if (lang.indexOf('zh-') >= 0) {
@@ -32,4 +33,7 @@ export function getCurrentLang() {
 }
 
 const baseUrl = process.env.NODE_ENV === 'production' ? 'https://didi.github.io/cube-ui/example/#/' : `http://${window.location.hostname}:8081/#/`
-export { baseUrl }
+
+const eventHub = new Vue()
+
+export { baseUrl, eventHub }

@@ -18,9 +18,12 @@ $action-sheet-active-color := $color-orange
 $action-sheet-bgc := $color-white
 $action-sheet-active-bgc := $color-light-grey-opacity
 $action-sheet-title-color := $color-dark-grey
+$action-sheet-space-bgc := $color-mask-bg
 /// picker style
 $action-sheet-picker-cancel-color := $color-light-grey
 $action-sheet-picker-cancel-active-color := $color-light-grey-s
+
+// bubble
 
 // button
 $btn-color := $color-white
@@ -58,18 +61,33 @@ $btn-outline-primary-active-bdc := $color-dark-orange
 
 // checkbox
 $checkbox-color := $color-grey
-$checkbox-bgc := $color-white
 $checkbox-icon-color := $color-light-grey-s
-$checkbox-icon-bgc := $color-white
 /// checked
 $checkbox-checked-icon-color := $color-orange
 $checkbox-checked-icon-bgc := $color-white
 /// disabled
 $checkbox-disabled-icon-color := $color-light-grey-ss
 $checkbox-disabled-icon-bgc := $color-light-grey-ss
-
+// checkbox hollow
+$checkbox-hollow-checked-icon-color := $color-orange
+$checkbox-hollow-disabled-icon-color := $color-light-grey-ss
 // checkbox-group
+$checkbox-group-bgc := $color-white
 $checkbox-group-horizontal-bdc := $color-light-grey-s
+
+// radio
+$radio-group-bgc := $color-white
+$radio-group-horizontal-bdc := $color-light-grey-s
+$radio-color := $color-grey
+$radio-icon-color := $color-light-grey-s
+/// selected
+$radio-selected-icon-color := $color-white
+$radio-selected-icon-bgc := $color-orange
+/// disabled
+$radio-disabled-icon-bgc := $color-light-grey-ss
+// radio hollow
+$radio-hollow-selected-icon-color := $color-orange
+$radio-hollow-disabled-icon-color := $color-light-grey-ss
 
 // dialog
 $dialog-color := $color-grey
@@ -80,7 +98,7 @@ $dialog-title-color := $color-dark-grey
 $dialog-close-color := $color-light-grey
 $dialog-btn-color := $color-light-grey
 $dialog-btn-bgc := $color-white
-$dialog-btn-active-bgc := $$color-light-grey-opacity
+$dialog-btn-active-bgc := $color-light-grey-opacity
 $dialog-btn-highlight-color := $color-orange
 $dialog-btn-highlight-active-bgc := $color-light-orange-opacity
 $dialog-btn-disabled-color := $color-light-grey
@@ -89,7 +107,6 @@ $dialog-btns-split-color := $color-row-line
 
 // index-list
 $index-list-bgc := $color-white
-$index-list-box-shadow := 0 3px 6px $color-light-grey-ss
 $index-list-title-color := $color-dark-grey
 $index-list-anchor-color := $color-light-grey
 $index-list-anchor-bgc := #f7f7f7
@@ -97,6 +114,8 @@ $index-list-item-color := $color-dark-grey
 $index-list-item-active-bgc := $color-light-grey-opacity
 $index-list-nav-color := $color-grey
 $index-list-nav-active-color := $color-orange
+
+// loading
 
 // picker
 $picker-bgc := $color-white
@@ -108,14 +127,16 @@ $picker-cancel-btn-active-color := $color-light-grey-s
 $picker-item-color := $color-dark-grey
 
 // popup
-$popup-mask-bgc := $color-mask-bg
+$popup-mask-bgc := rgb(37, 38, 45)
+$popup-mask-opacity := .4
 
-// scroll
-$scroll-content-bgc := $color-white
+//scroll
 
 // slide
 $slide-dot-bgc := $color-light-grey-s
 $slide-dot-active-bgc := $color-orange
+
+// time-picker
 
 // tip
 $tip-color := $color-white
@@ -124,6 +145,74 @@ $tip-bgc := $color-dark-grey-opacity
 // toast
 $toast-color := $color-light-grey-s
 $toast-bgc := rgba(37, 38, 45, 0.9)
+
+// upload
+$upload-btn-color := $color-grey
+$upload-btn-bgc := $color-white
+$upload-btn-active-bgc := $color-light-grey-opacity
+$upload-btn-box-shadow := 0 0 6px 2px $color-grey-opacity
+$upload-btn-border-color := #e5e5e5
+$upload-file-bgc := $color-white
+$upload-file-remove-color := rgba(0, 0, 0, .8)
+$upload-file-remove-bgc := $color-white
+$upload-file-state-bgc := $color-mask-bg
+$upload-file-success-color := $color-orange
+$upload-file-error-color := #f43530
+$upload-file-status-bgc := $color-white
+$upload-file-progress-color := $color-white
+
+// switch
+$switch-on-bgc := $color-orange
+$switch-off-bgc := $color-white
+$switch-off-border-color := #e4e4e4
+
+// input
+$input-color := $color-grey
+$input-bgc := $color-white
+$input-border-color := $color-row-line
+$input-focus-border-color := $color-orange
+$input-placeholder-color := $color-light-grey-s
+$input-clear-icon-color := $color-light-grey
+
+//textarea
+$textarea-color := $color-grey
+$textarea-bgc := $color-white
+$textarea-border-color := $color-row-line
+$textarea-focus-border-color := $color-orange
+$textarea-outline-color := $color-orange
+$textarea-placeholder-color := $color-light-grey-s
+$textarea-indicator-color := $color-light-grey-s
+
+// validator
+$validator-msg-def-color := #e64340
+
+// select
+$select-color := $color-grey
+$select-bgc := $color-white
+$select-disabled-color := #b8b8b8
+$select-disabled-bgc := $color-light-grey-opacity
+$select-border-color := $color-light-grey-s
+$select-border-active-color := $color-orange
+$select-icon-color := $color-light-grey
+$select-placeholder-color := $color-light-grey
+
+// swipe
+$swipe-btn-color := $color-white
+
+// form
+$form-color := $color-grey
+$form-bgc := $color-white
+$form-invalid-color := #e64340
+$form-group-legend-color := $color-light-grey
+$form-group-legend-bgc := $color-background
+$form-label-required-color := #e64340
+
+// drawer
+$drawer-color := $color-dark-grey
+$drawer-title-bdc := $color-light-grey-ss
+$drawer-title-bgc := $color-white
+$drawer-panel-bgc := $color-white
+$drawer-item-active-bgc := $color-light-grey-opacity
 ```
 
 ### 配置 webpack

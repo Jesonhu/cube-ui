@@ -2,6 +2,8 @@
 
 `TimePicker`组件提供了常用的日期选择功能。
 
+__注：__ 由于此组件基于 create-api 实现，所以在使用之前，请确保自己了解过 [create-api](#/zh-CN/docs/create-api)。
+
 ### 示例
 
 - 基本用法
@@ -132,6 +134,7 @@
 | 参数 | 说明 | 类型 | 默认值 |
 | - | - | - | - |
 | title | 标题 | String | '选择时间' |
+| swipeTime | 快速滑动选择器滚轮时，惯性滚动动画的时长，单位：ms | Number | 2500 |
 | delay | 将当前时间向后推算的分钟数，决定了最小可选时间 | Number | 15 |
 | day | 日期配置 | Object | { len: 3, filter: ['今日'], format: 'M月d日' } |
 | showNow | 是否显示当前时间 | Boolean | true |

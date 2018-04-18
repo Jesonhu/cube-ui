@@ -1,12 +1,13 @@
 <template>
   <transition name="cube-picker-fade">
     <cube-popup
-        type="picker"
-        :mask="true"
-        :center="false"
-        v-show="isVisible"
-        @touchmove.prevent
-        @mask-click="cancel">
+      type="picker"
+      :mask="true"
+      :center="false"
+      :z-index="zIndex"
+      v-show="isVisible"
+      @touchmove.prevent
+      @mask-click="cancel">
       <transition name="cube-picker-move">
         <div class="cube-picker-panel cube-safe-area-pb" v-show="isVisible" @click.stop>
           <div class="cube-picker-choose border-bottom-1px">
@@ -18,9 +19,9 @@
             <i class="border-bottom-1px"></i>
             <i class="border-top-1px"></i>
             <div class="cube-picker-wheel-wrapper" ref="wheelWrapper">
-              <div v-for="data in pickerData">
+              <div v-for="(data,index) in pickerData" :key="index">
                 <ul class="wheel-scroll">
-                  <li v-for="item in data" class="wheel-item">{{item.text}}</li>
+                  <li v-for="(item,index) in data" class="wheel-item" :key="index">{{item[textKey]}}</li>
                 </ul>
               </div>
             </div>
@@ -36,6 +37,8 @@
   import BScroll from 'better-scroll'
   import CubePopup from '../popup/popup.vue'
   import apiMixin from '../../common/mixins/api'
+  import basicPickerMixin from '../../common/mixins/basic-picker'
+  import pickerMixin from '../../common/mixins/picker'
 
   const COMPONENT_NAME = 'cube-picker'
 
@@ -46,32 +49,7 @@
 
   export default {
     name: COMPONENT_NAME,
-    mixins: [apiMixin],
-    props: {
-      data: {
-        type: Array,
-        default() {
-          return []
-        }
-      },
-      title: {
-        type: String
-      },
-      cancelTxt: {
-        type: String,
-        default: '取消'
-      },
-      confirmTxt: {
-        type: String,
-        default: '确定'
-      },
-      selectedIndex: {
-        type: Array,
-        default() {
-          return []
-        }
-      }
-    },
+    mixins: [apiMixin, basicPickerMixin, pickerMixin],
     data() {
       return {
         pickerData: this.data.slice(),
@@ -96,15 +74,27 @@
 
         let changed = false
         let pickerSelectedText = []
-        for (let i = 0; i < this.pickerData.length; i++) {
+
+        const dataLength = this.pickerData.length
+        const selectedValLength = this.pickerSelectedVal.length
+
+        if (selectedValLength !== dataLength) {
+          if (selectedValLength > dataLength) {
+            this.pickerSelectedVal.splice(dataLength)
+            this.pickerSelectedIndex.splice(dataLength)
+          }
+          changed = true
+        }
+
+        for (let i = 0; i < dataLength; i++) {
           let index = this.wheels[i].getSelectedIndex()
           this.pickerSelectedIndex[i] = index
 
           let value = null
           let text = ''
           if (this.pickerData[i].length) {
-            value = this.pickerData[i][index].value
-            text = this.pickerData[i][index].text
+            value = this.pickerData[i][index][this.valueKey]
+            text = this.pickerData[i][index][this.textKey]
           }
           if (this.pickerSelectedVal[i] !== value) {
             changed = true
@@ -131,11 +121,13 @@
         this.isVisible = true
         if (!this.wheels || this.dirty) {
           this.$nextTick(() => {
-            this.wheels = []
+            this.wheels = this.wheels || []
             let wheelWrapper = this.$refs.wheelWrapper
             for (let i = 0; i < this.pickerData.length; i++) {
-              this._createWheel(wheelWrapper, i)
+              this._createWheel(wheelWrapper, i).enable()
+              this.wheels[i].wheelTo(this.pickerSelectedIndex[i])
             }
+            this.dirty && this._destroyExtraWheels()
             this.dirty = false
           })
         } else {
@@ -160,10 +152,12 @@
         this.pickerData = data.slice()
         if (this.isVisible) {
           this.$nextTick(() => {
-            this.wheels.forEach((wheel, i) => {
-              wheel.refresh()
-              wheel.wheelTo(this.pickerSelectedIndex[i])
+            const wheelWrapper = this.$refs.wheelWrapper
+            this.pickerData.forEach((item, i) => {
+              this._createWheel(wheelWrapper, i)
+              this.wheels[i].wheelTo(this.pickerSelectedIndex[i])
             })
+            this._destroyExtraWheels()
           })
         } else {
           this.dirty = true
@@ -189,9 +183,9 @@
           this.$set(this.pickerData, index, data)
           let selectedIndex = wheel.getSelectedIndex()
           if (oldData.length) {
-            let oldValue = oldData[selectedIndex].value
+            let oldValue = oldData[selectedIndex][this.valueKey]
             for (let i = 0; i < data.length; i++) {
-              if (data[i].value === oldValue) {
+              if (data[i][this.valueKey] === oldValue) {
                 dist = i
                 break
               }
@@ -224,6 +218,7 @@
             wheel: {
               selectedIndex: this.pickerSelectedIndex[i] || 0
             },
+            swipeTime: this.swipeTime,
             observeDOM: false
           })
           wheel.on('scrollEnd', () => {
@@ -234,15 +229,19 @@
         }
         return this.wheels[i]
       },
+      _destroyExtraWheels() {
+        const dataLength = this.pickerData.length
+        if (this.wheels.length > dataLength) {
+          const extraWheels = this.wheels.splice(dataLength)
+          extraWheels.forEach((wheel) => {
+            wheel.destroy()
+          })
+        }
+      },
       _canConfirm() {
         return this.wheels.every((wheel) => {
           return !wheel.isInTransition
         })
-      }
-    },
-    watch: {
-      data(newData) {
-        this.setData(newData, this.selectedIndex)
       }
     },
     components: {

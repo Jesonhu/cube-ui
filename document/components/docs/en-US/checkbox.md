@@ -14,47 +14,59 @@
 
   If selected, the value of `checked` is `true`.
 
-- Disabled state
+- Styled checkbox
 
   ```html
-  <cube-checkbox v-model="checked" :disabled="true">
-    Disabled Checkbox
+  <cube-checkbox v-model="checked" position="right" shape="square" :hollow-style="true">
+    Styled Checkbox
   </cube-checkbox>
   ```
 
-  Set `disabled` to `true` to turn into the disabled state.
-
-- Position of the checkbox icon
-
-  ```html
-  <cube-checkbox v-model="checked" position="right">
-    Position Checkbox
-  </cube-checkbox>
-  ```
-
-  If setting `position` to `'right'`, the position of the checkbox's icon is on the right.
+  If setting `position` to `'right'`, the position of the checkbox's icon is on the right. And you could use `shape` to configure the shape of icon,  set `hollow-style=true` to use hollow-out style.
 
 - Change the value of model
 
   ```html
-  <cube-checkbox v-model="checked" label="labelValue">
-    Set label Checkbox
-  </cube-checkbox>
+  <cube-checkbox v-model="checked" :option="option" />
+  ```
+  ```js
+  export default {
+    data() {
+      return {
+        checked: false,
+        option: {
+          label: 'Option Checkbox',
+          value: 'optionValue',
+          disabled: false
+        }
+      }
+    }
+  }
   ```
 
-  If `label` is setted, and when the checkbox is selected, the value of `checked` is `'labelValue'`. When not selected, the value is `false`; Therefore, in circumstances of single checkbox, better not set `label`.
+  If `option` is setted, and when the checkbox is selected, the value of `checked` is `'optionValue'`. When not selected, the value is `false`; Therefore, in circumstances of single checkbox, better not set `option`.
+
+- Disabled state
+
+  ```html
+  <cube-checkbox v-model="checked" :option="{disabled: true}">
+    Disabled Checkbox
+  </cube-checkbox>
+  ```
 
 ### Props configuration
 
 | Attribute | Description | Type | Accepted Values | Default |
 | - | - | - | - | - |
-| disabled | whether disabled | Boolean | true/false | false |
-| position | position | String | left/right | left |
-| label | if selected, then map the value to v-model | Boolean/String | - | '' |
+| option | option value | Boolean/String/Object | - | - |
+| position | icon position | String | left/right | left |
+| shape | icon shape | String | circle/square | circle |
+| hollow-style | whether is hollow-out style | Boolean | true/false | false |
 
-### Events
+* `option` sub configuration
 
-| Event Name | Description | Parameters |
+| Attribute | Description | Type  |
 | - | - | - |
-| input | triggers when the selecting state changes | the value of label if setted or boolean value which represents whether selected |
-
+| label | the text of label | String |
+| value | the value of checkbox item | String/Number |
+| disabled | whether the checkbox item is disabled | Boolean |

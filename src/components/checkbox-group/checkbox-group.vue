@@ -1,9 +1,18 @@
 <template>
   <div class="cube-checkbox-group" ref="group" :class="groupClass" :data-horz="horizontal">
-    <slot></slot>
+    <slot>
+      <cube-checkbox
+        v-for="(option, index) in options"
+        :key="index"
+        :option="option"
+        :shape="shape"
+        :position="position"
+        :hollow-style="hollowStyle" />
+    </slot>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import CubeCheckbox from '../checkbox/checkbox.vue'
   const COMPONENT_NAME = 'cube-checkbox-group'
 
   const EVENT_INPUT = 'input'
@@ -19,6 +28,24 @@
       horizontal: {
         type: Boolean,
         default: false
+      },
+      shape: {
+        type: String,
+        default: 'circle'
+      },
+      position: {
+        type: String,
+        default: 'left'
+      },
+      hollowStyle: {
+        type: Boolean,
+        default: false
+      },
+      options: {
+        type: Array,
+        default() {
+          return []
+        }
       }
     },
     data () {
@@ -52,6 +79,9 @@
         this._value.splice(index, 1)
         this.$emit(EVENT_INPUT, this._value)
       })
+    },
+    components: {
+      CubeCheckbox
     }
   }
 </script>
@@ -62,6 +92,7 @@
   .cube-checkbox-group
     z-index: 1
     overflow: hidden
+    background-color: $checkbox-group-bgc
     .cube-checkbox
       &:last-child
         .cube-checkbox-wrap
@@ -80,7 +111,13 @@
         border-color: $checkbox-group-horizontal-bdc
       &:last-child
         border-none()
+      &[data-pos="right"]
+        .cube-checkbox-ui
+          position: relative
+          margin-left: .42em
+          order: 1
+        .cube-checkbox-label
+          margin-right: 0
     .cube-checkbox-wrap
-      display: inline-flex
-      width: auto
+      justify-content: center
 </style>

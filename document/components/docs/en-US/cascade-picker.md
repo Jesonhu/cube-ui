@@ -1,12 +1,16 @@
 ## CascadePicker
 
-`CascadePicker` component is used to implement the cascading change between picker columns. What is the effect of cascade? Considering the usage of province-city-area picker, when province is changed, you may want the city column display the exactly cities of current province, so does the area column. And the `CascadePicker` is here to help you handle this.
+> New in 1.2.0+
+
+`CascadePicker` component is used to implement the cascading change between picker columns. What is the effect of cascade? Considering the usage of province-city-area picker, when the province is changed, you may want the city column to display the exact cities of current province, so does the area column. And the `CascadePicker` is here to help you handle this.
+
+__Notice:__ Cause this component used create-api, so you should read [create-api](#/en-US/docs/create-api) first.
 
 ### Example
 
 - Basic usage
 
-  Comparing to `Picker`, the required structure of props data is different for `CascadePicker`. The data structure of `Picker` is a two-dimensional array, and each column corresponds to an array. As in `CascadePicker`, there is a tree, that each item of first column has a `children` property which contains the counterpart data of following columns. Here is an example.
+  Comparing to `Picker`, the required structure of props data is different for `CascadePicker`. The data structure of `Picker` is a two-dimensional array, and each column corresponds to an array. As in `CascadePicker`, we need a tree structure, that each item of first column has a `children` property which contains the corresponding data of following columns. Here is an example.
 
   ```html
   <cube-button @click="showCascadePicker">Cascade Picker</cube-button>
@@ -52,11 +56,22 @@
         title: 'Cascade Picker',
         data: cascadeData,
         selectedIndex: [1, 0, 0],
+        cancelTxt: 'Cancel',
+        confirmTxt: 'Confirm',
         onSelect: (selectedVal, selectedIndex, selectedText) => {
-          console.log('select', selectedVal, selectedIndex, selectedText)
+          this.$createDialog({
+            type: 'warn',
+            content: `Selected Item: <br/> - value: ${selectedVal.join(', ')} <br/>
+              - index: ${selectedIndex.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
+            icon: 'cubeic-alert'
+          }).show()
         },
         onCancel: () => {
-          console.log('cancel')
+          this.$createToast({
+            type: 'correct',
+            txt: 'Picker canceled',
+            time: 1000
+          }).show()
         }
       })
     },
@@ -67,7 +82,7 @@
     }
   }
   ```
-  When first column is on `Fruit`, the options of second column are `Apple` and `Orange`. And so on, when second column is on `Orange`, the options of third column are `Three` and `Four`.
+  When the first column goes to `Fruit`, the data of second column are `Apple` and `Orange`. And so on, when the second column goes to on `Orange`, the data of third column are `Three` and `Four`.
 
 - Province-city-area Picker
 
@@ -93,10 +108,19 @@
         title: 'City Picker',
         data: cityData,
         onSelect: (selectedVal, selectedIndex, selectedText) => {
-          console.log('select', selectedVal, selectedIndex, selectedText)
+          this.$createDialog({
+            type: 'warn',
+            content: `Selected Item: <br/> - value: ${selectedVal.join(', ')} <br/>
+              - index: ${selectedIndex.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
+            icon: 'cubeic-alert'
+          }).show()
         },
         onCancel: () => {
-          console.log('cancel')
+          this.$createToast({
+            type: 'correct',
+            txt: 'Picker canceled',
+            time: 1000
+          }).show()
         }
       })
     },
@@ -110,7 +134,7 @@
 
 - Date Picker
 
-  It's same to date picker. Just construct the cascading data. Besides, we have written a [DatePicker component in example](https://github.com/didi/cube-ui/blob/dev/example/components/date-picker.vue), which could help you constructing the cascading data with start date and end date.
+  As same as province-city-area picker, you just need to construct the cascading data. Besides, we have written a [DatePicker component in example](https://github.com/didi/cube-ui/blob/dev/example/components/date-picker.vue), which could help you construct the cascading data with start date and end date.
 
   ```html
   <cube-button @click="showDatePicker">Date Picker</cube-button>
@@ -126,10 +150,19 @@
         min: [2008, 8, 8],
         max: [2020, 10, 20],
         onSelect: (selectedVal, selectedIndex, selectedText) => {
-          console.log('select', selectedVal, selectedIndex, selectedText)
+          this.$createDialog({
+            type: 'warn',
+            content: `Selected Item: <br/> - value: ${selectedVal.join(', ')} <br/>
+              - index: ${selectedIndex.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
+            icon: 'cubeic-alert'
+          }).show()
         },
         onCancel: () => {
-          console.log('cancel')
+          this.$createToast({
+            type: 'correct',
+            txt: 'Picker canceled',
+            time: 1000
+          }).show()
         }
       })
     },
@@ -154,10 +187,19 @@
       this.setDataPicker = this.$createCascadePicker({
         title: 'Set Data',
         onSelect: (selectedVal, selectedIndex, selectedText) => {
-          console.log('select', selectedVal, selectedIndex, selectedText)
+          this.$createDialog({
+            type: 'warn',
+            content: `Selected Item: <br/> - value: ${selectedVal.join(', ')} <br/>
+              - index: ${selectedIndex.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
+            icon: 'cubeic-alert'
+          }).show()
         },
         onCancel: () => {
-          console.log('cancel')
+          this.$createToast({
+            type: 'correct',
+            txt: 'Picker canceled',
+            time: 1000
+          }).show()
         }
       })
     },
@@ -175,7 +217,6 @@
     }
   }
   ```
-  One more thing, although `setData` is available when visible. But considering user experience, it is demand to maintain the number of column unchanging when the picker is visible.
 
 ### Props configuration
 
@@ -183,7 +224,11 @@
 | - | - | - | - | - |
 | title | title | String | '' | - |
 | data | the cascading data used to init option items | Array | [] | - |
-| selectIndex | the index of the selected item, corresponding content will be displayed when picker shows | Array | [] | [1] |
+| selectedIndex | the index of the selected item, corresponding content will be displayed when picker shows | Array | [] | [1] |
+| cancelTxt | the text of the cancel button | String | '取消' | - |
+| confirmTxt | the text of the confirm button | String | '确定' | - |
+| swipeTime | the duration of the momentum animation when user flicks the wheel of the picker, Unit: ms | Number | 2500 | - |
+| alias | configure the alias of `value` and `text`, used as same as the alias of `Picker` component | Object | {} | { value: 'id', text: 'name'} |
 
 * `data` sub configuration
 

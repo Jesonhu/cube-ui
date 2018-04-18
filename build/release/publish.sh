@@ -2,6 +2,9 @@
 
 # git pull
 git pull origin master
+# npm install
+rm package-lock.json
+npm install --registry=https://registry.npmjs.org
 # build
 npm run build
 # ADD commit
@@ -11,7 +14,7 @@ git push origin master
 # replace src/ __VERSION__
 node ./build/release/replace-version.js
 # publish
-npm publish
+npm publish --registry=https://registry.npmjs.org
 # checkout src/index.js
 git checkout src/index.js
 git checkout dev

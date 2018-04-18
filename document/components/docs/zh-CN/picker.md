@@ -2,6 +2,8 @@
 
 `Picker`组件支持多列选择器及数据联动。
 
+__注：__ 由于此组件基于 create-api 实现，所以在使用之前，请确保自己了解过 [create-api](#/zh-CN/docs/create-api)。
+
 ### 示例
 
 - 基本用法
@@ -10,7 +12,7 @@
   <cube-button @click="showPicker">Picker</cube-button>
   ```
   ```js
-  const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' }, 
+  const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' },
     { text: '幽鬼', value: '幽鬼' }]
   export default {
     mounted () {
@@ -44,11 +46,13 @@
 
 - 多列选择器
 
+  `data`字段接收一个数组，其长度决定了`picker`的列数。
+
   ```html
-  <cube-button @click="showPicker">Multiple Columns Picker</cube-button>
+  <cube-button @click="showMutiPicker">Multi-column Picker</cube-button>
   ```
   ```js
-  const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' }, 
+  const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' },
     { text: '幽鬼', value: '幽鬼' }]
   const col2Data = [{ text: '输出', value: '输出' }, { text: '控制', value: '控制' },
     { text: '核心', value: '核心'}, { text: '爆发', value: '爆发' }, { text: '辅助', value: '辅助' },
@@ -79,43 +83,29 @@
       })
     },
     methods: {
-      showPicker () {
-        this.picker.show()
+      showMutiPicker() {
+        this.mutiPicker.show()
       }
     }
   }
   ```
-  
-  `data`字段接收一个数组，其长度决定了`picker`的列数。
 
-- 联动选择器
+- 配置别名
+
+  可通过`alias`属性配置`value`和`text`的别名。如，用`id`代表`value`，用`name`代表`text`。
 
   ```html
-  <cube-button @click="showPicker">Linkage Picker</cube-button>
+  <cube-button @click="showAliasPicker">Use Alias</cube-button>
   ```
   ```js
-  import { provinceList, cityList, areaList } from '../data/area'
-
   export default {
-    data () {
-      return {
-        tempIndex: [0, 0, 0]
-      }
-    },
     mounted () {
-      this.picker = this.$createPicker({
-        title: 'Linkage Picker',
-        data: this.linkageData,
-        onChange: (i, newIndex) => {
-          if (newIndex !== this.tempIndex[i]) {
-            for (let j = 2; j > i; j--) {
-              this.tempIndex.splice(j, 1, 0)
-              this.linkagePicker.scrollTo(j, 0)
-            }
-
-            this.tempIndex.splice(i, 1, newIndex)
-            this.linkagePicker.setData(this.linkageData, this.tempIndex)
-          }
+      this.aliasPicker = this.$createPicker({
+        title: 'Use Alias',
+        data: [[{ id: 1, name: 'A' }, { id: 2, name: 'B' }, { id: 3, name: 'C' }]],
+        alias: {
+          value: 'id',
+          text: 'name'
         },
         onSelect: (selectedVal, selectedIndex, selectedText) => {
           this.$createDialog({
@@ -134,34 +124,18 @@
         }
       })
     },
-    watch: {
-      linkageData() {
-        this.picker.refresh()
-      }
-    },
-    computed: {
-      linkageData() {
-        const provinces = provinceList
-        const cities = cityList[provinces[this.tempIndex[0]].value]
-        const areas = areaList[cities[this.tempIndex[1]].value]
-
-        return [provinces, cities, areas]
-      }
-    },
     methods: {
-      showPicker () {
-        this.picker.show()
+      showAliasPicker() {
+        this.aliasPicker.show()
       }
     }
   }
   ```
-  
-  通过监听每个滚轴触发的`change`事件，然后调用`setData`方法去动态设置相关联的滚轴的值来完成联动选择的功能。
 
 - 实例方法 `setData`
 
   ```html
-  <cube-button @click="showPicker">SetData Picker</cube-button>
+  <cube-button @click="showSetDataPicker">Use SetData</cube-button>
   ```
   ```js
   const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' },
@@ -193,69 +167,27 @@
       })
     },
     methods: {
-      showPicker () {
+      showSetDataPicker () {
         this.picker.setData([col1Data, col2Data, col3Data], [1, 2, 3])
         this.picker.show()
       }
     }
   }
   ```
-  
-  实例方法`setData`可接受2个参数，都为数组类型。第一个参数为滚轴需要显示的数据，第二个参数为选中值的索引。
-  
-- 扩展组件：日期选择器
 
-  除了直接调用，我们还可以基于扩展 Picker 组件扩展出很多常用的选择器，如日期选择器、时间选择器。对于扩展的选择器组件，我们依然推荐以 API 的形式调用，以日期选择器为例，首先基于 Picker 组件二次封装一个 DatePicker 组件（[源码](https://github.com/didi/cube-ui/blob/dev/example/components/date-picker.vue)），然后对该组件`createAPI`后，便可如下使用。
-  
-  ```html
-  <cube-button @click="showDatePicker">Date Picker</cube-button>
-  ```
-  ```js
-    import Vue from 'vue'
-    import createAPI from '@/modules/create-api'
-    import DatePicker from 'example/components/date-picker.vue'
-  
-    createAPI(Vue, DatePicker, ['select', 'cancel'], false)
-  
-    export default {
-      mounted () {
-        this.datePicker = this.$createDatePicker({
-          min: [2008, 8, 8],
-          max: [2020, 10, 20],
-          onSelect: (selectedVal, selectedIndex, selectedText) => {
-            this.$createDialog({
-              type: 'warn',
-              content: `Selected Item: <br/> - value: ${selectedVal.join(', ')} <br/>
-                - index: ${selectedIndex.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
-              icon: 'cubeic-alert'
-            }).show()
-          },
-          onCancel: () => {
-            this.$createToast({
-              type: 'correct',
-              txt: 'Picker canceled',
-              time: 1000
-            }).show()
-          }
-        })
-      },
-      methods: {
-        showDatePicker () {
-          this.datePicker.show()
-        }
-      }
-    }
-  ```
-  
+  实例方法`setData`可接受2个参数，都为数组类型。第一个参数为滚轴需要显示的数据，第二个参数为选中值的索引。
+
 ### Props 配置
 
 | 参数 | 说明 | 类型 | 默认值 | 示例 |
 | - | - | - | - | - |
 | title | 标题 | String | '' | - |
-| data | 传入picker数据，数组的长度决定了picker的列数 | Array | [] | - |
-| cancelTxt | picker左侧按钮文案 | String | '取消' | - |
-| confirmTxt | picker右侧按钮文案 | String | '确定' | - |
-| selectIndex | 被选中的索引值，拉起picker后显示这个索引值对应的内容 | Array | [] | [1] |
+| data | 传入 picker 数据，数组的长度决定了 picker 的列数 | Array | [] | - |
+| selectedIndex | 被选中的索引值，拉起 picker 后显示这个索引值对应的内容 | Array | [] | [1] |
+| cancelTxt | 取消按钮文案 | String | '取消' | - |
+| confirmTxt | 确定按钮文案 | String | '确定' | - |
+| swipeTime | 快速滑动 picker 滚轮时，惯性滚动动画的时长，单位：ms | Number | 2500 | - |
+| alias | 配置`value`和`text`的别名 | Object | {} | { value: 'id', text: 'name'} |
 
 * `data`子配置项
 
@@ -278,3 +210,5 @@
 | 方法名 | 说明 | 参数1 | 参数2 |
 | - | - | - | - |
 | setData | 设置picker可选项 | picker每列可选项的文案和值，Array类型 | picker每列选中的索引，Array类型 |
+| show | 显示选择器 | - | - |
+| hide | 隐藏选择器 | - | - |

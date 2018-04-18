@@ -2,6 +2,8 @@
 
 `Dialog`模态框组件，提供了多种样式及交互形式。
 
+__注：__ 由于此组件基于 create-api 实现，所以在使用之前，请确保自己了解过 [create-api](#/zh-CN/docs/create-api)。
+
 ### 示例
 
 - 类型设置
@@ -153,7 +155,7 @@
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | - | - | - | - | - |
 | type | 类型 | String | 提示框 alert / 确认框 confirm | alert |
-| icon | 图标的 class 名 | String | [参照 style 模块下的内置 icon 部分](#/style) | '' |
+| icon | 图标的 class 名 | String | [参照 style 模块下的内置 icon 部分](#/zh-CN/docs/style) | '' |
 | title | 标题 | String | - | '' |
 | content | 正文 | String | - | '' |
 | showClose | 是否显示关闭按钮 | Boolean | true/false | false |

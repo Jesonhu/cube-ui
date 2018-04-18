@@ -1,9 +1,13 @@
 <template>
   <cube-picker
       ref="picker"
-      :title="title"
       :data="pickerData"
       :selected-index="pickerSelectedIndex"
+      :title="title"
+      :z-index="zIndex"
+      :cancel-txt="cancelTxt"
+      :confirm-txt="confirmTxt"
+      :swipe-time="swipeTime"
       @select="_pickerSelect"
       @cancel="_pickerCancel"
       @change="_pickerChange"></cube-picker>
@@ -12,6 +16,8 @@
 <script type="text/ecmascript-6">
   import CubePicker from '../picker/picker.vue'
   import apiMixin from '../../common/mixins/api'
+  import basicPickerMixin from '../../common/mixins/basic-picker'
+  import pickerMixin from '../../common/mixins/picker'
 
   const COMPONENT_NAME = 'cube-cascade-picker'
   const EVENT_SELECT = 'select'
@@ -20,25 +26,7 @@
 
   export default {
     name: COMPONENT_NAME,
-    mixins: [apiMixin],
-    props: {
-      title: {
-        type: String,
-        default: 'Cascade Picker'
-      },
-      data: {
-        type: Array,
-        default() {
-          return []
-        }
-      },
-      selectedIndex: {
-        type: Array,
-        default() {
-          return []
-        }
-      }
-    },
+    mixins: [apiMixin, basicPickerMixin, pickerMixin],
     data () {
       return {
         cascadeData: this.data.slice(),
@@ -47,7 +35,7 @@
       }
     },
     created() {
-      this.updatePickerData()
+      this._updatePickerData()
     },
     methods: {
       show() {
@@ -59,7 +47,7 @@
       setData(data, selectedIndex = []) {
         this.cascadeData = data
         this.pickerSelectedIndex = selectedIndex
-        this.updatePickerData()
+        this._updatePickerData()
       },
       _pickerSelect(selectedVal, selectedIndex, selectedText) {
         this.$emit(EVENT_SELECT, selectedVal, selectedIndex, selectedText)
@@ -70,20 +58,20 @@
       _pickerChange(i, newIndex) {
         if (newIndex !== this.pickerSelectedIndex[i]) {
           this.pickerSelectedIndex.splice(i, 1, newIndex)
-          this.updatePickerData(i + 1)
+          this._updatePickerData(i + 1)
         }
         this.$emit(EVENT_CHANGE, i, newIndex)
       },
-      updatePickerData(fromColumn = 0) {
+      _updatePickerData(fromColumn = 0) {
         let data = this.cascadeData
         let i = 0
-        while (Array.isArray(data) && data.length) {
+        while (data) {
           if (i >= fromColumn) {
             let columnData = []
             data.forEach((item) => {
               columnData.push({
-                value: item.value,
-                text: item.text
+                value: item[this.valueKey],
+                text: item[this.textKey]
               })
             })
             this.pickerData[i] = columnData
@@ -92,9 +80,13 @@
               ? (this.pickerSelectedIndex[i] < data.length ? this.pickerSelectedIndex[i] || 0 : 0)
               : this.$refs.picker.refillColumn(i, columnData)
           }
-          data = data[this.pickerSelectedIndex[i]].children
+          data = data.length ? data[this.pickerSelectedIndex[i]].children : null
 
           i++
+        }
+
+        if (i < this.pickerData.length) {
+          this.pickerData.splice(i, this.pickerData.length - i)
         }
 
         this.pickerData = this.pickerData.slice()

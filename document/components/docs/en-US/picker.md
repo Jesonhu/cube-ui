@@ -2,6 +2,8 @@
 
 `Picker` component supports multi-column selectors and linkage data.
 
+__Notice:__ Cause this component used create-api, so you should read [create-api](#/en-US/docs/create-api) first.
+
 ### Example
 
 - Basic usage
@@ -10,7 +12,7 @@
   <cube-button @click="showPicker">Picker</cube-button>
   ```
   ```js
-  const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' }, 
+  const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' },
     { text: '幽鬼', value: '幽鬼' }]
   export default {
     mounted () {
@@ -44,11 +46,13 @@
 
 - Multi-column Picker
 
+  `data` receives an array, whose length determines the columns of `picker`.
+
   ```html
-  <cube-button @click="showPicker">Multi-column Picker</cube-button>
+  <cube-button @click="showMutiPicker">Multi-column Picker</cube-button>
   ```
   ```js
-  const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' }, 
+  const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' },
     { text: '幽鬼', value: '幽鬼' }]
   const col2Data = [{ text: '输出', value: '输出' }, { text: '控制', value: '控制' },
     { text: '核心', value: '核心'}, { text: '爆发', value: '爆发' }, { text: '辅助', value: '辅助' },
@@ -79,43 +83,29 @@
       })
     },
     methods: {
-      showPicker () {
-        this.picker.show()
+      showMutiPicker() {
+        this.mutiPicker.show()
       }
     }
   }
   ```
 
-  `data` receives an array, whose length determines the columns of `picker`.
+- Alias
 
-- Linkage Picker
+  You can configure the `alias` of `value` and `text`, such as, use `id` to represent `value`, `name` to represent `text`.
 
   ```html
-  <cube-button @click="showPicker">Linkage Picker</cube-button>
+  <cube-button @click="showAliasPicker">Use Alias</cube-button>
   ```
   ```js
-  import { provinceList, cityList, areaList } from '../data/area'
-
   export default {
-    data () {
-      return {
-        tempIndex: [0, 0, 0]
-      }
-    },
     mounted () {
-      this.picker = this.$createPicker({
-        title: 'Linkage Picker',
-        data: this.linkageData,
-        onChange: (i, newIndex) => {
-          if (newIndex !== this.tempIndex[i]) {
-            for (let j = 2; j > i; j--) {
-              this.tempIndex.splice(j, 1, 0)
-              this.linkagePicker.scrollTo(j, 0)
-            }
-
-            this.tempIndex.splice(i, 1, newIndex)
-            this.linkagePicker.setData(this.linkageData, this.tempIndex)
-          }
+      this.aliasPicker = this.$createPicker({
+        title: 'Use Alias',
+        data: [[{ id: 1, name: 'A' }, { id: 2, name: 'B' }, { id: 3, name: 'C' }]],
+        alias: {
+          value: 'id',
+          text: 'name'
         },
         onSelect: (selectedVal, selectedIndex, selectedText) => {
           this.$createDialog({
@@ -134,34 +124,20 @@
         }
       })
     },
-    watch: {
-      linkageData() {
-        this.picker.refresh()
-      }
-    },
-    computed: {
-      linkageData() {
-        const provinces = provinceList
-        const cities = cityList[provinces[this.tempIndex[0]].value]
-        const areas = areaList[cities[this.tempIndex[1]].value]
-
-        return [provinces, cities, areas]
-      }
-    },
     methods: {
-      showPicker () {
-        this.picker.show()
+      showAliasPicker() {
+        this.aliasPicker.show()
       }
     }
   }
   ```
 
-  By monitoring the `change` event triggered by each roller and invoke `setData` method to dynamicly set values of associated rollers to accomplish linkage selectors.
-
 - Instance method `setData`
 
+  Instance method `setData` accepts two parameters, both of whom are arrays. The first is data that the roller displays and the second is indexs of selected values.
+
   ```html
-  <cube-button @click="showPicker">SetData Picker</cube-button>
+  <cube-button @click="showSetDataPicker">Use SetData</cube-button>
   ```
   ```js
   const col1Data = [{ text: '剧毒', value: '剧毒'}, { text: '蚂蚁', value: '蚂蚁' },
@@ -193,7 +169,7 @@
       })
     },
     methods: {
-      showPicker () {
+      showSetDataPicker () {
         this.picker.setData([col1Data, col2Data, col3Data], [1, 2, 3])
         this.picker.show()
       }
@@ -201,61 +177,17 @@
   }
   ```
 
-  Instance method `setData` accepts two parameters, both of whom are arrays. The first is data that the roller displays and the second is indexs of selected values.
-  
-- Extended component: Date Picker
-
-  Besides use directly, we could extend many common pickers based on the raw Picker, such as Date Picker and Time Picker. As for Extended pickers, the method of API calling is also recommended. Take Date Picker as an example, We wrote a post-packaging Date Picker component ([source code](https://github.com/didi/cube-ui/blob/dev/example/components/date-picker.vue)) at first. And after `createAPI` for this component, it could be used as following.
-
-  ```html
-  <cube-button @click="showDatePicker">Date Picker</cube-button>
-  ```
-  ```js
-    import Vue from 'vue'
-    import createAPI from '@/modules/create-api'
-    import DatePicker from 'example/components/date-picker.vue'
-  
-    createAPI(Vue, DatePicker, ['select', 'cancel'], false)
-  
-    export default {
-      mounted () {
-        this.datePicker = this.$createDatePicker({
-          min: [2008, 8, 8],
-          max: [2020, 10, 20],
-          onSelect: (selectedVal, selectedIndex, selectedText) => {
-            this.$createDialog({
-              type: 'warn',
-              content: `Selected Item: <br/> - value: ${selectedVal.join(', ')} <br/>
-                - index: ${selectedIndex.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
-              icon: 'cubeic-alert'
-            }).show()
-          },
-          onCancel: () => {
-            this.$createToast({
-              type: 'correct',
-              txt: 'Picker canceled',
-              time: 1000
-            }).show()
-          }
-        })
-      },
-      methods: {
-        showDatePicker () {
-          this.datePicker.show()
-        }
-      }
-    }
-  ```
-    
 ### Props configuration
 
 | Attribute | Description | Type | Accepted Values | Default |
 | - | - | - | - | - |
 | title | title | String | '' | - |
 | data | data that passed into picker, whose length determines the columns of picker | Array | [] | - |
-| cancelTxt | the text of the left button in picker | String | '取消' | - |
-| confirmTxt | the text of the right button in picker | String | '确定' | - |
-| selectIndex | the index of the selected value, corresponding content will be displayed when picker shows | Array | [] | [1] |
+| selectedIndex | the index of the selected value, corresponding content will be displayed when picker shows | Array | [] | [1] |
+| cancelTxt | the text of the cancel button | String | '取消' | - |
+| confirmTxt | the text of the confirm button | String | '确定' | - |
+| swipeTime | the duration of the momentum animation when user flicks the wheel of the picker, Unit: ms | Number | 2500 | - |
+| alias | configure the alias of `value` and `text` | Object | {} | { value: 'id', text: 'name'} |
 
 * `data` sub configuration
 
@@ -278,3 +210,5 @@
 | Method name | Description | Parameters 1 | Parameters 2 |
 | - | - | - | - |
 | setData | set options in picker| Array, texts and values of options of each columns of picker | Array, indexes of selected item in each column of picker |
+| show | show picker | - | - |
+| hide | hide picker | - | - |

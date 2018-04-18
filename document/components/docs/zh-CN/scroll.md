@@ -9,10 +9,25 @@
   通过设置 `data` 属性为一个数组，即可生成能够在容器内优雅滚动的列表。
 
   ```html
-  <div class="scroll-wrapper">
-    <cube-scroll :data="items"></cube-scroll>
-  </div>
+  <cube-scroll :data="items"></cube-scroll>
   ```
+
+  ```stylus
+  .cube-scroll-wrapper
+    height: 100px
+  ```
+
+- 滚动原理
+
+  由于 better-scroll 的滚动原理为：在滚动方向上，第一个子元素的长度超过了容器的长度。
+
+  那么对于 Scroll 组件，其实就是内容元素`.cube-scroll-content`在滚动方向上的长度必须大于容器元素 `.cube-scroll-wrapper`。根据滚动方向的不同，有以下两种情况：
+
+  1）纵向滚动：内容元素的高度必须大于容器元素。由于容器元素的高度默认会被子元素的高度撑开，所以为了满足我们的滚动前提，你需要给 Scroll 组件的 `.cube-scroll-wrapper`元素一个非弹性高度。
+
+  2）横向滚动：内容元素的宽度必须大于容器元素。由于在默认情况下，子元素的宽度不会超过容器元素，所以需要给 Scroll 组件的 `.cube-scroll-content` 元素设置大于 `.cube-scroll-wrapper` 的宽度。
+
+
 
 - 配置 better-scroll 选项
 
@@ -68,13 +83,13 @@
     },
     methods: {
       onPullingDown() {
-        // 模拟更新数据
+        // Mock async load.
         setTimeout(() => {
           if (Math.random() > 0.5) {
-            // 如果有新数据
+            // If have new data, just update the data property.
             this.items.unshift('I am new data: ' + +new Date())
           } else {
-            // 如果没有新数据
+            // If no new data, you need use the method forceUpdate to tell us the load is done.
             this.$refs.scroll.forceUpdate()
           }
         }, 1000)
@@ -82,6 +97,8 @@
     }
   }
   ```
+
+  需要注意的是，如果请求结果是没有新数据，也就是数据与之前一模一样没有变化，则必须使用 `this.$refs.scroll.forceUpdate()` 结束此次下拉刷新，这样，Scroll 组件才会开始监听下一次下拉刷新操作。
 
   3）上拉加载
 
@@ -113,10 +130,10 @@
     },
     methods: {
       onPullingUp() {
-        // 更新数据
+        // Mock async load.
         setTimeout(() => {
           if (Math.random() > 0.5) {
-            // 如果有新数据
+            // If have new data, just update the data property.
             let newPage = [
               'I am line ' + ++this.itemIndex,
               'I am line ' + ++this.itemIndex,
@@ -127,7 +144,7 @@
 
             this.items = this.items.concat(newPage)
           } else {
-            // 如果没有新数据
+            // If no new data, you need use the method forceUpdate to tell us the load is done.
             this.$refs.scroll.forceUpdate()
           }
         }, 1000)
@@ -135,6 +152,8 @@
     }
   }
   ```
+
+  需要注意的是，如果请求结果是没有新数据，也就是数据与之前一模一样没有变化，则必须使用 `this.$refs.scroll.forceUpdate()` 结束此次上拉加载，这样，Scroll 组件才会开始监听下一次上拉加载操作。
 
 - 自定义下拉刷新和上拉加载动画
 
@@ -182,6 +201,8 @@
 | listenBeforeScroll | 是否派发 before-scroll-start 事件 | Boolean | true/false | false |
 | refreshDelay | data属性的数据更新后，scroll 的刷新延时 | Number | - | 20 |
 
+`options`中 better-scroll 的几个常用配置项，`scrollbar`、`pullDownRefresh`、`pullUpLoad`这三个配置即可设为 `Boolean`（`false` 关闭该功能，`true` 开启该功能，并使用默认子配置），也可设为`Object`，开启该功能并具体定制其子配置项。
+
 - `scrollbar` 子配置项
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
@@ -201,7 +222,7 @@
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | - | - | - | - | - |
 | threshold | 上拉刷新动作的上拉距离阈值 | Number | - | 0 |
-| txt | 上拉加载的相关文案 | Object | - | { more: 'Load more', noMore: 'No more data' } |
+| txt | 上拉加载的相关文案 | Object | - | { more: '', noMore: '' } |
 
 ### 插槽
 

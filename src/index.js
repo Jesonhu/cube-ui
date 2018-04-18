@@ -4,14 +4,26 @@ import {
   Scroll,
   Popup,
   TimePicker,
-  CascadePicker,
+  SegmentPicker,
+  DatePicker,
+  Select,
   Dialog,
   Tip,
   Toast,
+  Input,
+  Validator,
+  Textarea,
+  Rate,
+  Form,
   ActionSheet,
   CheckboxGroup,
+  RadioGroup,
+  Switch,
   Slide,
   IndexList,
+  Upload,
+  Swipe,
+  Drawer,
   BScroll,
   createAPI
 } from './module'
@@ -20,20 +32,33 @@ function install(Vue) {
   if (install.installed) {
     return
   }
+  install.installed = true
   const components = [
     Style,
     Button,
     TimePicker,
-    CascadePicker,
+    SegmentPicker,
+    DatePicker,
+    Select,
     Dialog,
     Tip,
     Toast,
+    Input,
+    Validator,
+    Textarea,
+    Rate,
     CheckboxGroup,
+    RadioGroup,
+    Switch,
+    Form,
     Slide,
     IndexList,
     ActionSheet,
     Scroll,
-    Popup
+    Popup,
+    Upload,
+    Swipe,
+    Drawer
   ]
   components.forEach((Component) => {
     Component.install(Vue)

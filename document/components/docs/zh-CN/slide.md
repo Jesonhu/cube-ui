@@ -6,10 +6,40 @@
 
 - 基本使用
 
-  `cube-slide`元素即整个轮播图组件，`cube-slide-item`元素则是每一个轮播的页面，其 slot 为该页的内容。
+  由于 `cube-slide` 最常用的场景中，每个轮播页是一个可跳转链接的图片，所以我们提供的最简便的用法是，通过 `data` 属性传入一个包含图片和跳转链接信息的数组，我们会默认将其渲染成一组超链接图片的轮播图。
 
   ```html
-  <cube-slide @change="changePage">
+  <cube-slide :data="items"/>
+  ```
+  ```javascript
+  export default {
+    data() {
+      return {
+        items: [
+          {
+            url: 'http://www.didichuxing.com/',
+            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide01.png'
+          },
+          {
+            url: 'http://www.didichuxing.com/',
+            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide02.png'
+          },
+          {
+            url: 'http://www.didichuxing.com/',
+            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide03.png'
+          }
+        ]
+      }
+    }
+  }
+  ```
+
+- 自定义内容
+
+  当然我们也支持自定义内容，使用默认插槽和`cube-slide-item`就可以自定义每个轮播页的结构。其中，`cube-slide`元素即整个轮播图组件，`cube-slide-item`元素则是每一个轮播的页面，其 slot 为该页的内容。
+
+  ```html
+  <cube-slide ref="slide" :data="items" @change="changePage">
     <cube-slide-item v-for="(item, index) in items" :key="index" @click.native="clickHandler(item, index)">
       <a :href="item.url">
         <img :src="item.image">
@@ -41,12 +71,14 @@
       changePage(current) {
         console.log('当前轮播图序号为:' + current)
       },
-      clickHandle(item, index) {
+      clickHandler(item, index) {
         console.log(item, index)
       }
     }
   }
   ```
+
+  虽然你使用了自定义内容以后，我们不会用 `data` 生成默认内容，但依然建议你将数据传入 `data` 属性，因为只有这样，我们组件内部才能帮你自动进行数据监听和重新渲染，否则你可能会需要自己调用 refresh 方法重新渲染，比如这样 `this.$refs.slide.refresh()`。
 
 - 初始索引
 
@@ -96,49 +128,13 @@
   <cube-slide :speed="200"></cube-slide>
   ```
 
-- refresh 方法
+- 允许纵向滚动
 
-  当新增或者删除 Slide Item 项或者修改 Slide 配置的时候，可以调用实例的 refresh 方法更新 Slide。
+  默认在 Slide 区域的时候，竖向是不能滚动的，如果想要竖向可以滚动，可以设置 `allowVertical` 为 `true`。
 
   ```html
-  <cube-slide ref="slide">
-    <cube-slide-item v-for="(item, index) in items" :key="index">
-      <a :href="item.url">
-        <img :src="item.image">
-      </a>
-    </cube-slide-item>
-  </cube-slide>
+  <cube-slide :allow-vertical="true"></cube-slide>
   ```
-  ```js
-  const item3 = {
-    url: 'http://www.didichuxing.com/',
-    image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide03.png'
-  }
-  export default {
-    data() {
-      return {
-        items: [
-          {
-            url: 'http://www.didichuxing.com/',
-            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide01.png'
-          },
-          {
-            url: 'http://www.didichuxing.com/',
-            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide02.png'
-          }
-        ]
-      }
-    },
-    mounted() {
-      setTimeout(() => {
-        this.items.push(item3)
-        this.$refs.slide.refresh()
-      }, 2000)
-    }
-  }
-  ```
-
-  延迟 2 秒钟后新增一个 Slide Item，新增完成后需要调用 refresh 方法更新。
 
 - 修改 dots 内容
 
@@ -158,12 +154,17 @@
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | - | - | - | - | - |
+| data | 用于 side-item 列表渲染的数据，当需要使用内置的默认内容，或者让组件自动监听数据变化重新渲染时，此参数必传 | Array | - | [] |
 | initialIndex | 初始索引值 | Number | - | 0 |
 | loop | 是否循环播放 | Boolean | true/false | true |
 | autoPlay | 是否自动播放 | Boolean | true/false | true |
 | interval | 播放间隔 | Number | - | 4000 |
 | threshold | 切换页面的滑动阈值 | Number | (0, 1) | 0.3 |
 | speed | 切换页面的速度 | Number | - | 400 |
+| allowVertical | 是否允许竖向滚动 | Boolean | true/false | false |
+| direction | 轮播方向 | String | horizontal/vertical | horizontal |
+| showDots | 是否显示轮播指示点 | Boolean | true/false | true |
+| stopPropagation | 是否阻止事件冒泡，可用于解决嵌套同方向slide时会遇到的事件冒泡问题 | Boolean | true/false | false |
 
 ### 插槽
 
@@ -182,4 +183,4 @@
 
 | 方法名 | 说明 |
 | - | - |
-| refresh | 当轮播图内容删减的时候，可以调用此方法进行更新 |
+| refresh | 当轮播图内容删减的时候，可以调用此方法进行更新，重新渲染 |

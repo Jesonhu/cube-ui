@@ -1,6 +1,10 @@
 ## CascadePicker组件
 
+> 1.2.0 新增
+
 `CascadePicker`组件是级联选择器，用于实现多列选择之间的级联变化。比如，在选择省市区时，当省切换到了江苏省，城市列应该变成江苏省的各个城市，同理，如果城市切换到苏州市，区列的选项也应变成苏州市的各个区，这就级联的意义。
+
+__注：__ 由于此组件基于 create-api 实现，所以在使用之前，请确保自己了解过 [create-api](#/zh-CN/docs/create-api)。
 
 ### 示例
 
@@ -52,6 +56,8 @@
         title: 'Cascade Picker',
         data: cascadeData,
         selectedIndex: [1, 0, 0],
+        cancelTxt: 'Cancel',
+        confirmTxt: 'Confirm',
         onSelect: (selectedVal, selectedIndex, selectedText) => {
           console.log('select', selectedVal, selectedIndex, selectedText)
         },
@@ -72,13 +78,13 @@
 - 省市区选择器
 
   对于省市区选择器，只需要构造出级联选择器的数据结构传入就可以了。
-  
+
   ```html
   <cube-button @click="showCityPicker">City Picker</cube-button>
   ```
   ```js
   import { provinceList, cityList, areaList } from 'example/data/area'
-  
+
   const cityData = provinceList
   cityData.forEach(province => {
     province.children = cityList[province.value]
@@ -86,17 +92,26 @@
       city.children = areaList[city.value]
     })
   })
-  
+
   export default {
     mounted () {
       this.cityPicker = this.$createCascadePicker({
         title: 'City Picker',
         data: cityData,
         onSelect: (selectedVal, selectedIndex, selectedText) => {
-          console.log('select', selectedVal, selectedIndex, selectedText)
+          this.$createDialog({
+            type: 'warn',
+            content: `Selected Item: <br/> - value: ${selectedVal.join(', ')} <br/>
+              - index: ${selectedIndex.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
+            icon: 'cubeic-alert'
+          }).show()
         },
         onCancel: () => {
-          console.log('cancel')
+          this.$createToast({
+            type: 'correct',
+            txt: 'Picker canceled',
+            time: 1000
+          }).show()
         }
       })
     },
@@ -126,10 +141,19 @@
         min: [2008, 8, 8],
         max: [2020, 10, 20],
         onSelect: (selectedVal, selectedIndex, selectedText) => {
-          console.log('select', selectedVal, selectedIndex, selectedText)
+          this.$createDialog({
+            type: 'warn',
+            content: `Selected Item: <br/> - value: ${selectedVal.join(', ')} <br/>
+              - index: ${selectedIndex.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
+            icon: 'cubeic-alert'
+          }).show()
         },
         onCancel: () => {
-          console.log('cancel')
+          this.$createToast({
+            type: 'correct',
+            txt: 'Picker canceled',
+            time: 1000
+          }).show()
         }
       })
     },
@@ -154,10 +178,19 @@
       this.setDataPicker = this.$createCascadePicker({
         title: 'Set Data',
         onSelect: (selectedVal, selectedIndex, selectedText) => {
-          console.log('select', selectedVal, selectedIndex, selectedText)
+          this.$createDialog({
+            type: 'warn',
+            content: `Selected Item: <br/> - value: ${selectedVal.join(', ')} <br/>
+              - index: ${selectedIndex.join(', ')} <br/> - text: ${selectedText.join(' ')}`,
+            icon: 'cubeic-alert'
+          }).show()
         },
         onCancel: () => {
-          console.log('cancel')
+          this.$createToast({
+            type: 'correct',
+            txt: 'Picker canceled',
+            time: 1000
+          }).show()
         }
       })
     },
@@ -174,16 +207,18 @@
     }
   }
   ```
-  
-  值得注意的一点是，虽然不管选择器显示前后，都可以`setData`，但是为了体验，在显示后`setData`，所传入的数据结构，必须与之前的列数相同，也就是说如果之前是三列选择器，显示时`setData`还得是三列。
-  
+
 ### Props 配置
 
 | 参数 | 说明 | 类型 | 默认值 | 示例 |
 | - | - | - | - | - |
 | title | 标题 | String | '' | - |
 | data | 级联选择器的树形数据，用于初始化选项 | Array | [] | - |
-| selectIndex | 被选中的索引值，拉起选择器后显示这个索引值对应的内容 | Array | [] | [1] |
+| selectedIndex | 被选中的索引值，拉起选择器后显示这个索引值对应的内容 | Array | [] | [1] |
+| cancelTxt | 取消按钮文案 | String | '取消' | - |
+| confirmTxt | 确定按钮文案 | String | '确定' | - |
+| swipeTime | 快速滑动选择器滚轮时，惯性滚动动画的时长，单位：ms | Number | 2500 | - |
+| alias | 配置`value`和`text`的别名，用法同`Picker`组件 | Object | {} | { value: 'id', text: 'name'} |
 
 * `data`子配置项
 

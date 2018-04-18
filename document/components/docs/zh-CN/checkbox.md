@@ -5,44 +5,66 @@
 ### 示例
 
 - 基本用法
+
   ```html
   <cube-checkbox v-model="checked">
     Checkbox
   </cube-checkbox>
   ```
   如果选中了，则 `checked` 的值就为 `true`。
-- 禁用状态
+
+- 复选框图标样式
+
   ```html
-  <cube-checkbox v-model="checked" :disabled="true">
+  <cube-checkbox v-model="checked" position="right" shape="square" :hollow-style="true">
+    Styled Checkbox
+  </cube-checkbox>
+  ```
+  设置 `position` 为 `'right'` 则复选框图标位置在右边，且可以通过 `shape` 配置图标形状以及设置 `hollow-style` 为 `true` 代表显示的是镂空样式的（即使 `shape` 不是 `square` 表现的也是方形的）。
+
+- 改变 model 的值
+
+  ```html
+  <cube-checkbox v-model="checked" :option="option" />
+  ```
+  ```js
+  export default {
+    data() {
+      return {
+        checked: false,
+        option: {
+          label: 'Option Checkbox',
+          value: 'optionValue',
+          disabled: false
+        }
+      }
+    }
+  }
+  ```
+
+  设置 `option`，当复选框选中的时候，`checked` 的值就是 `'optionValue'`，当未选中的时候，`checked` 的值就是 `false`；所以其实在单个复选框的场景下，最好不要设置 `option`。
+
+- 禁用状态
+
+  ```html
+  <cube-checkbox v-model="checked" :option="{disabled: true}">
     Disabled Checkbox
   </cube-checkbox>
   ```
-  设置 `disabled` 为 `true` 即为禁用状态
-- 复选框图标位置
-  ```html
-  <cube-checkbox v-model="checked" position="right">
-    Position Checkbox
-  </cube-checkbox>
-  ```
-  设置 `position` 为 `'right'` 则复选框图标位置在右边
-- 改变 model 的值
-  ```html
-  <cube-checkbox v-model="checked" label="labelValue">
-    Set label Checkbox
-  </cube-checkbox>
-  ```
-  设置 `label`，当复选框选中的时候，`checked` 的值就是 `'labelValue'`，当未选中的时候，`checked` 的值就是 `false`；所以其实在单个复选框的场景下，最好不要设置 `label`。
 
 ### Props 配置
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | - | - | - | - | - |
-| disabled | 是否被禁用 | Boolean | true/false | false |
+| option | 配置项 | Boolean/String/Object | - | - |
 | position | 位置 | String | left/right | left |
-| label | 如果选中的话，则是把该值映射到 v-model 上 | Boolean/String | - | '' |
+| shape | 图标形状 | String | circle/square | circle |
+| hollow-style | 是否是镂空样式的 | Boolean | true/false | false |
 
-### 事件
+* `option` 子配置项
 
-| 事件名 | 说明 | 参数 |
+| 参数 | 说明 | 类型 |
 | - | - | - |
-| input | 选中状态发生改变时触发 | 设置的 label 的值或者是否选中的布尔值 |
+| label | 复选框显示文字 | String |
+| value | 复选框的值 | String/Number |
+| disabled | 复选框是否被禁用 | Boolean |
